@@ -29,9 +29,7 @@ const Notification = (props) => {
                 // Set automatic notification deletion based on passed timeout
                 timeoutHandler: setTimeout(() => {
                     setState(prevState => {
-                        const newNotifications = [...prevState.notifications];
-                        const notificationToRemove = prevState.notifications.filter(notification => notification.id === id)[0];
-                        newNotifications.splice(prevState.notifications[prevState.notifications.indexOf(notificationToRemove)], 1);
+                        const newNotifications = removeNotificationFromState(prevState, id)
                         return {
                             ...prevState,
                             notifications: newNotifications
@@ -46,6 +44,16 @@ const Notification = (props) => {
         })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.msg, props.timeout])
+
+    const removeNotificationFromState = (prevState, id) => {
+        const newNotifications = [...prevState.notifications];
+        const notificationToRemove = prevState.notifications.filter(notification => notification.id === id)[0];
+        clearTimeout(notificationToRemove.timeoutHandler);
+        const index = prevState.notifications.indexOf(notificationToRemove);
+        if (index === -1) return {...prevState};
+        newNotifications.splice(index, 1);
+        return newNotifications;
+    }
 
     /**
      * @function generateRandomId
@@ -80,12 +88,7 @@ const Notification = (props) => {
     const removeNotificationHandler = (id) => {
         if (typeof id === "number") {
             setState(prevState => {
-                const newNotifications = [...prevState.notifications];
-                const notificationToRemove = prevState.notifications.filter(notification => notification.id === id)[0];
-                clearTimeout(notificationToRemove.timeoutHandler);
-                const index = prevState.notifications.indexOf(notificationToRemove);
-                if (index === -1) return {...prevState};
-                newNotifications.splice(index, 1);
+                const newNotifications = removeNotificationFromState(prevState, id);
                 return {
                     ...prevState,
                     notifications: newNotifications
@@ -102,9 +105,6 @@ const Notification = (props) => {
             onClick={removeNotificationHandler.bind(this, notification.id)}
             key={notification.id}
             className={classArray.join(' ')}
-            style={{
-                top: `${index * 70}px`
-            }}
         >
             <header>{notification.title}</header>
             <span>{notification.msg}</span>
@@ -114,7 +114,9 @@ const Notification = (props) => {
 
     return (
         <React.Fragment>
-            {notifications}
+            <div className={classes.NotificationContainer}>
+                {notifications}
+            </div>
         </React.Fragment>
     );
 };
