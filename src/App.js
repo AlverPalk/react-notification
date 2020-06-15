@@ -3,6 +3,7 @@ import Notification from "./components/Notification/Notification";
 
 const App = () => {
 
+    // TESTING NOTIFICATION
     const [state, setState] = useState({notification: {msg: 'Initial notification'}})
 
     const addNotificationHandler = () => {
@@ -25,7 +26,7 @@ const App = () => {
 
     return (
         <div>
-            <Notification title='Notification' msg={state.notification.msg} type='default' timeout={Math.floor(Math.random() * 10000) + 3000}/>
+            <Notification title='Notification' msg={state.notification.msg} type='default' timeout={Math.floor(Math.random() * 1000) + 3000}/>
             <button onClick={addNotificationHandler}>Add another notification</button>
         </div>
     );
