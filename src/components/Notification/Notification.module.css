@@ -40,9 +40,7 @@
 }
 
 .Notification header {
-    /*border: 1px solid red;*/
     position: relative;
-    height: 14px;
     padding: 4px 0;
     font-weight: bold;
     overflow: hidden;
@@ -70,6 +68,7 @@
     animation-duration: 300ms;
     animation-fill-mode: forwards;
     animation-timing-function: linear;
+    transition: 300ms;
 }
 
 .Notification::after {
@@ -94,21 +93,19 @@
 
 @keyframes animate-in {
     from {
-        transform: translateX(300px);
+        transform: translateX(500px);
     }
     to {
-        transform: translateX(0px);
+        transform: translateX(0);
     }
 }
 
 @keyframes animate-timeout {
     from {
-        /*width: 100%*/
         width: 100%;
     }
 
     to {
-        /*width: 0*/
         width: 0;
     }
 }
