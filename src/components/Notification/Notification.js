@@ -26,6 +26,7 @@ const Notification = (props) => {
                 title: props.title,
                 msg: props.msg,
                 timeout: props.timeout,
+                animate: true,
                 // Set automatic notification deletion based on passed timeout
                 timeoutHandler: setTimeout(() => {
                     setState(prevState => {
@@ -98,17 +99,44 @@ const Notification = (props) => {
         return -1;
     }
 
+    const removeTimeoutHandler = (id) => {
+        setState(prevState => {
+            // Clear timeout and remove timeout handler
+            const newNotifications = [...prevState.notifications];
+            const notification = prevState.notifications.filter(notification => notification.id === id)[0];
+            let timeOutHandler = newNotifications[newNotifications.indexOf(notification)].timeoutHandler;
+            clearTimeout(timeOutHandler);
+            timeOutHandler = null;
+
+            // Pause animation
+            notification.animate = false;
+
+            return {
+                ...prevState,
+                notifications: newNotifications,
+            }
+        })
+    }
+
     const classArray = [classes.Notification, classes[props.type.charAt(0).toUpperCase() + props.type.slice(1)]];
 
     const notifications = state.notifications.map((notification, index) => {
         return <div
             onClick={removeNotificationHandler.bind(this, notification.id)}
+            onMouseEnter={removeTimeoutHandler.bind(this, notification.id)}
             key={notification.id}
             className={classArray.join(' ')}
         >
             <header>{notification.title}</header>
             <span>{notification.msg}</span>
-            <div className={classes.Timeout} style={{animationDuration: `${notification.timeout}ms`}} />
+            <div
+                className={classes.Timeout}
+                style={{
+                    animationDuration: `${notification.timeout}ms`,
+                    animationPlayState: notification.animate ? 'running' : 'paused',
+                    backgroundColor: notification.animate ? '#68e764' : '#e76464'
+                }} />
+
         </div>
     })
 
